@@ -22,7 +22,6 @@ steps:
         gcloud beta --project=$PROJECT_ID run deploy \
         --platform managed \
         --image $$DOCKER_IMAGE \
-        --allow-unauthenticated \
         --region=europe-west1 \
         --allow-unauthenticated \
         cloudrun-example
