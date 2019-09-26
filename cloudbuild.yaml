@@ -20,7 +20,7 @@ steps:
 
         # Deploy Cloud Run container
         gcloud beta --project=$PROJECT_ID run deploy \
-        --platform run \
+        --platform managed \
         --image $$DOCKER_IMAGE \
         --allow-unauthenticated \
         --region=europe-west1 \
