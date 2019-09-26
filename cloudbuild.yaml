@@ -1,11 +1,4 @@
-substitutions:
-  _GCLOUD_PROJECT: pmoncada-001
-  _REGEX_STAGING: '^v[0-9]+(\.[0-9]+)*-sta(\.([0-9])+)?$'
-  _REGEX_PROD: '^v[0-9]+(\.[0-9]+)*$'
-
-
 steps:
-
   - id: Build
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: /bin/bash
@@ -13,11 +6,9 @@ steps:
       - '-c'
       - |
 
-        DOCKER_IMAGE=gcr.io/$_GCLOUD_PROJECT/$_GCLOUD_PROJECT:$COMMIT_SHA
+        DOCKER_IMAGE=eu.gcr.io/$PROJECT_ID/cloudrun-example:$COMMIT_SHA
         docker build -t $$DOCKER_IMAGE .
         docker push $$DOCKER_IMAGE
-
-
   - id: Deploy
     name: 'gcr.io/cloud-builders/gcloud@sha256:9ceb8143f170d76de4b3ba7b35820c09a50336d6b378fe343eec883f37771167'
     entrypoint: /bin/bash
@@ -25,10 +16,13 @@ steps:
       - '-c'
       - |
 
-        DOCKER_IMAGE=gcr.io/$_GCLOUD_PROJECT/$_GCLOUD_PROJECT:$COMMIT_SHA
+        DOCKER_IMAGE=eu.gcr.io/$PROJECT_ID/cloudrun-example:$COMMIT_SHA
 
         # Deploy Cloud Run container
-        gcloud beta --project=$_GCLOUD_PROJECT run deploy \
+        gcloud beta --project=$PROJECT_ID run deploy \
+        --platform run \
         --image $$DOCKER_IMAGE \
         --allow-unauthenticated \
-        --region=europe-west1 --allow-unauthenticated $$CLOUD_RUN_SERVICE
+        --region=europe-west1 \
+        --allow-unauthenticated \
+        cloudrun-example
